@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVENUE - Your Digital Caregiver Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sage: {
+                            50: '#f6f7f6',
+                            100: '#e3e8e3',
+                            200: '#c7d1c7',
+                            300: '#a4b5a4',
+                            400: '#8B9D83',
+                            500: '#6B7D63',
+                            600: '#566650',
+                            700: '#465242',
+                            800: '#3a4337',
+                            900: '#31382f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #8B9D83 0%, #6B7D63 100%);
+            position: relative;
+        }
+        
+        .gradient-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(107,125,99,0.3) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #8B9D83 0%, #6B7D63 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(139, 157, 131, 0.08);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(139, 157, 131, 0.15), 0 0 0 1px rgba(139, 157, 131, 0.1);
+            border-color: rgba(139, 157, 131, 0.2);
+        }
+        
+        .floating-accent {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        
+        .accent-1 {
+            width: 300px;
+            height: 300px;
+            background: #8B9D83;
+            top: 10%;
+            right: 10%;
+        }
+        
+        .accent-2 {
+            width: 400px;
+            height: 400px;
+            background: #6B7D63;
+            bottom: 20%;
+            left: 5%;
+        }
+        
+        .subtle-pattern {
+            background-image: 
+                radial-gradient(circle at 1px 1px, rgba(139, 157, 131, 0.03) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .number-counter {
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s ease-in forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .slide-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 0.8s ease-out forwards;
+        }
+        
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #8B9D83;
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6B7D63;
+        }
+    </style>
+</head>
+<body class="antialiased bg-stone-50">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/80 backdrop-blur-md shadow-sm z-50 border-b border-sage-100/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center">
+                    <span class="text-3xl font-bold gradient-text">AVENUE</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about" class="text-gray-700 hover:text-sage-600 transition">About</a>
+                    <a href="#features" class="text-gray-700 hover:text-sage-600 transition">Features</a>
+                    <a href="#story" class="text-gray-700 hover:text-sage-600 transition">Our Story</a>
+                    <a href="#waitlist" class="gradient-bg text-white px-6 py-2 rounded-full hover:opacity-90 transition">Join Waitlist</a>
+                </div>
+                <button class="md:hidden text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 gradient-bg relative overflow-hidden">
+        <div class="floating-accent accent-1"></div>
+        <div class="floating-accent accent-2"></div>
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="text-white fade-in">
+                    <p class="text-sm uppercase tracking-wider mb-4 opacity-90">Welcome to AVENUE</p>
+                    <h1 class="text-5xl md:text-6xl leading-tight mb-6">
+                        <span class="font-light italic block mb-2">Your Digital Dashboard for</span>
+                        <span class="font-bold text-stone-100 block">Caregiver Support</span>
+                    </h1>
+                    <p class="text-xl mb-8 opacity-90 leading-relaxed">
+                        Managing care for aging parents shouldn't feel impossible. AVENUE brings bills, appointments, medical records, and housing search into one place — so you can focus on what matters.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#waitlist" class="bg-white text-sage-700 px-8 py-4 rounded-full font-semibold hover:bg-stone-50 hover:shadow-2xl transition-all text-center shadow-lg">
+                            Join the Waitlist →
+                        </a>
+                        <a href="#story" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-sage-700 transition-all text-center">
+                            Read Our Story
+                        </a>
+                    </div>
+                    <div class="mt-8 flex items-center gap-2">
+                        <div class="flex -space-x-2">
+                            <div class="w-10 h-10 rounded-full bg-sage-400 border-2 border-white"></div>
+                            <div class="w-10 h-10 rounded-full bg-sage-300 border-2 border-white"></div>
+                            <div class="w-10 h-10 rounded-full bg-stone-200 border-2 border-white"></div>
+                        </div>
+                        <p class="text-sm opacity-90">
+                            <span class="font-semibold">100+ caregivers</span> already joined
+                        </p>
+                    </div>
+                </div>
+                <div class="relative animate-float hidden md:block">
+                    <div class="bg-white rounded-3xl shadow-2xl p-8 transform rotate-2">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-sage-50 rounded-xl">
+                                <div>
+                                    <p class="text-sm text-gray-600">Medical Appointment</p>
+                                    <p class="font-semibold">Dr. Chen - Cardiology</p>
+                                </div>
+                                <span class="text-sage-700 text-sm font-medium">Tomorrow 2PM</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-stone-100 rounded-xl">
+                                <div>
+                                    <p class="text-sm text-gray-600">Bill Due</p>
+                                    <p class="font-semibold">Medicare Premium</p>
+                                </div>
+                                <span class="text-stone-700 text-sm font-medium">$164.90</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl">
+                                <div>
+                                    <p class="text-sm text-gray-600">Task Completed</p>
+                                    <p class="font-semibold">Prescription Refilled</p>
+                                </div>
+                                <span class="text-green-600 text-sm">✓</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-white subtle-pattern relative">
+        <div class="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white opacity-60"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="slide-up" style="animation-delay: 0.1s;">
+                    <div class="text-5xl font-bold gradient-text mb-2 number-counter">53M</div>
+                    <p class="text-gray-600">U.S. Caregivers</p>
+                </div>
+                <div class="slide-up" style="animation-delay: 0.2s;">
+                    <div class="text-5xl font-bold gradient-text mb-2 number-counter">$400B</div>
+                    <p class="text-gray-600">Market Opportunity</p>
+                </div>
+                <div class="slide-up" style="animation-delay: 0.3s;">
+                    <div class="text-5xl font-bold gradient-text mb-2 number-counter">24/7</div>
+                    <p class="text-gray-600">Support Available</p>
+                </div>
+                <div class="slide-up" style="animation-delay: 0.4s;">
+                    <div class="text-5xl font-bold gradient-text mb-2 number-counter">100%</div>
+                    <p class="text-gray-600">Free to Start</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-stone-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <p class="text-sage-700 font-semibold mb-2">FEATURES</p>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                    Everything You Need in One Place
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Built by a caregiver, for caregivers. AVENUE simplifies the chaos of elder care management.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md card-hover backdrop-blur-sm">
+                    <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6 shadow-md">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Bill Management</h3>
+                    <p class="text-gray-600 leading-relaxed">Track all bills, get alerts before due dates, and spot unusual charges automatically.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md card-hover backdrop-blur-sm">
+                    <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6 shadow-md">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Appointment Tracking</h3>
+                    <p class="text-gray-600 leading-relaxed">Never miss a doctor visit. Sync calendars, set reminders, and coordinate family schedules.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md card-hover backdrop-blur-sm">
+                    <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6 shadow-md">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Medical Records Hub</h3>
+                    <p class="text-gray-600 leading-relaxed">Securely store and access insurance details, prescriptions, and medical history.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md card-hover backdrop-blur-sm">
+                    <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6 shadow-md">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Housing Discovery</h3>
+                    <p class="text-gray-600 leading-relaxed">Explore assisted living, memory care, and senior housing options with reviews and pricing.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md card-hover backdrop-blur-sm">
+                    <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6 shadow-md">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Community Support</h3>
+                    <p class="text-gray-600 leading-relaxed">Connect with other caregivers, share experiences, and reduce isolation.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md card-hover backdrop-blur-sm">
+                    <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6 shadow-md">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Smart Alerts</h3>
+                    <p class="text-gray-600 leading-relaxed">Get notified about price changes, overdue tasks, and important deadlines.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Founder Story Section -->
+    <section id="story" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="relative">
+                    <div class="absolute inset-0 gradient-bg rounded-3xl transform rotate-3 opacity-20"></div>
+                    <div class="absolute -inset-4 gradient-bg rounded-3xl transform -rotate-2 blur-2xl opacity-10"></div>
+                    <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=800&fit=crop" 
+                         alt="Caregiver supporting elderly parent" 
+                         class="relative rounded-3xl shadow-2xl w-full object-cover h-[500px] border-4 border-white">
+                </div>
+                <div>
+                    <p class="text-sage-700 font-semibold mb-2">OUR STORY</p>
+                    <h2 class="text-4xl font-bold text-gray-900 mb-6">Built From Personal Experience</h2>
+                    <div class="space-y-4 text-gray-600 leading-relaxed text-lg">
+                        <p>
+                            At 29, I became a caregiver for my father. I was thrown into a chaotic system with no guidance — juggling bills, insurance claims, doctor appointments, and housing searches while working full-time.
+                        </p>
+                        <p>
+                            I felt lost, overwhelmed, and alone. There was no centralized place to manage everything. No tool designed for people like me.
+                        </p>
+                        <p class="font-semibold text-gray-900">
+                            So I built AVENUE — not as a founder, but as the first user.
+                        </p>
+                        <p>
+                            This platform exists because I needed it. And if you're caring for an aging parent, I built it for you too.
+                        </p>
+                    </div>
+                    <div class="mt-8 p-6 bg-sage-50 rounded-xl border-l-4 border-sage-600 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-sage-100 rounded-full -mr-16 -mt-16 opacity-30"></div>
+                        <p class="text-gray-700 italic relative z-10">
+                            "I'm not just building a product — I'm building the support system I wish I had when I needed it most."
+                        </p>
+                        <p class="text-gray-900 font-semibold mt-2">— AVENUE Founder</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose AVENUE -->
+    <section class="py-20 bg-stone-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <p class="text-sage-700 font-semibold mb-2">WHY AVENUE?</p>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                    What Makes Us Different
+                </h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition-all border border-sage-100/20">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                            <span class="text-white font-bold text-xl">1</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-900">All-in-One Dashboard</h3>
+                            <p class="text-gray-600">Financial, medical, housing, and social tools in one place — no more juggling apps.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition-all border border-sage-100/20">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                            <span class="text-white font-bold text-xl">2</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-900">Built by Caregivers</h3>
+                            <p class="text-gray-600">Designed from firsthand experience, not corporate assumptions.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition-all border border-sage-100/20">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                            <span class="text-white font-bold text-xl">3</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-900">Community-Driven</h3>
+                            <p class="text-gray-600">Reduce caregiver loneliness with built-in support groups and local events.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition-all border border-sage-100/20">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold text-xl">4</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-gray-900">Smart Automation</h3>
+                            <p class="text-gray-600">Get alerts like "Your parent's car insurance just increased. Compare rates?"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Waitlist Section -->
+    <section id="waitlist" class="py-20 gradient-bg relative overflow-hidden">
+        <div class="floating-accent accent-1"></div>
+        <div class="floating-accent accent-2"></div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="inline-block px-4 py-1 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium mb-4">
+                ✨ Limited Early Access
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+                Be Among the First 1,000 Caregivers
+            </h2>
+            <p class="text-xl text-stone-100 mb-12 max-w-2xl mx-auto">
+                Join our waitlist to get early access, exclusive updates, and help shape the future of AVENUE.
+            </p>
+
+            <form id="waitlistForm" class="max-w-md mx-auto">
+                <div class="space-y-4">
+                    <input 
+                        type="text" 
+                        id="name"
+                        placeholder="Your Name" 
+                        required
+                        class="w-full px-6 py-4 rounded-full text-gray-900 focus:outline-none focus:ring-4 focus:ring-sage-300 transition shadow-sm border border-sage-100/20"
+                    >
+                    <input 
+                        type="email" 
+                        id="email"
+                        placeholder="Your Email" 
+                        required
+                        class="w-full px-6 py-4 rounded-full text-gray-900 focus:outline-none focus:ring-4 focus:ring-sage-300 transition shadow-sm border border-sage-100/20"
+                    >
+                    <select 
+                        id="relationship"
+                        class="w-full px-6 py-4 rounded-full text-gray-900 focus:outline-none focus:ring-4 focus:ring-sage-300 transition shadow-sm border border-sage-100/20"
+                        required
+                    >
+                        <option value="">I'm caring for my...</option>
+                        <option value="parent">Parent</option>
+                        <option value="spouse">Spouse</option>
+                        <option value="grandparent">Grandparent</option>
+                        <option value="other">Other family member</option>
+                        <option value="professional">I'm a professional caregiver</option>
+                    </select>
+                    <textarea 
+                        id="challenge"
+                        placeholder="What's your biggest caregiver challenge? (Optional)" 
+                        rows="3"
+                        class="w-full px-6 py-4 rounded-3xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-sage-300 transition resize-none shadow-sm border border-sage-100/20"
+                    ></textarea>
+                    <button 
+                        type="submit"
+                        class="w-full bg-white text-sage-700 px-8 py-4 rounded-full font-bold text-lg hover:bg-stone-50 hover:shadow-2xl transition-all shadow-xl"
+                    >
+                        Join the Waitlist →
+                    </button>
+                </div>
+                <p class="text-stone-100 text-sm mt-4">
+                    🔒 We respect your privacy. No spam, ever.
+                </p>
+            </form>
+
+            <div id="successMessage" class="hidden mt-8 p-6 bg-white/10 backdrop-blur rounded-2xl border border-white/20">
+                <p class="text-white text-lg font-semibold">🎉 You're on the list!</p>
+                <p class="text-stone-100 mt-2">Check your email for next steps.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="py-16 bg-white subtle-pattern relative">
+        <div class="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white opacity-60"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12">
+                <p class="text-sage-700 font-semibold mb-2">COMMUNITY</p>
+                <h2 class="text-3xl font-bold text-gray-900">Join Our Growing Community</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                <div class="p-6 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-sage-100/20">
+                    <div class="text-4xl mb-3">💬</div>
+                    <h3 class="font-bold text-xl mb-2 text-gray-900">Caregivers Avenue (Facebook)</h3>
+                    <p class="text-gray-600 mb-4">Connect with fellow caregivers, share tips, and find support.</p>
+                    <a href="https://www.facebook.com/groups/caregiversavenue" target="_blank" class="text-sage-700 font-semibold hover:underline">Join Group →</a>
+                </div>
+                <div class="p-6 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-sage-100/20">
+                    <div class="text-4xl mb-3">📋</div>
+                    <h3 class="font-bold text-xl mb-2 text-gray-900">Caregiver Survey</h3>
+                    <p class="text-gray-600 mb-4">Help us build features that matter to you.</p>
+                    <a href="#" class="text-sage-700 font-semibold hover:underline">Take Survey →</a>
+                </div>
+                <div class="p-6 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-sage-100/20">
+                    <div class="text-4xl mb-3">🎯</div>
+                    <h3 class="font-bold text-xl mb-2 text-gray-900">Early Access Program</h3>
+                    <p class="text-gray-600 mb-4">Be the first to test new features and provide feedback.</p>
+                    <a href="#waitlist" class="text-sage-700 font-semibold hover:underline">Get Early Access →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-2xl font-bold gradient-text mb-4">AVENUE</h3>
+                    <p class="text-gray-400">
+                        Digital infrastructure for elder care, built by caregivers for caregivers.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Product</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#features" class="hover:text-white transition">Features</a></li>
+                        <li><a href="#story" class="hover:text-white transition">Our Story</a></li>
+                        <li><a href="#waitlist" class="hover:text-white transition">Join Waitlist</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Community</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="https://www.facebook.com/groups/caregiversavenue" target="_blank" class="hover:text-white transition">Facebook Group</a></li>
+                        <li><a href="#" class="hover:text-white transition">Caregiver Resources</a></li>
+                        <li><a href="#" class="hover:text-white transition">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="mailto:hello@avenuehealth.co" class="hover:text-white transition">hello@avenuehealth.co</a></li>
+                        <li><a href="#" class="hover:text-white transition">Support</a></li>
+                        <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>© 2026 AVENUE. All rights reserved. Built with ❤️ for caregivers everywhere.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Form submission
+        document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                relationship: document.getElementById('relationship').value,
+                challenge: document.getElementById('challenge').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Here you would normally send this to your backend/Airtable/etc.
+            console.log('Waitlist signup:', formData);
+            
+            // Show success message
+            document.getElementById('waitlistForm').style.display = 'none';
+            document.getElementById('successMessage').classList.remove('hidden');
+            
+            // Optional: Send to Google Forms, Airtable, or your backend
+            // fetch('YOUR_ENDPOINT', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(formData)
+            // });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+      
