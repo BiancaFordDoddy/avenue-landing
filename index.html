@@ -584,7 +584,7 @@
                 <div>
                     <h4 class="font-semibold mb-4">Contact</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li><a href="mailto:hello@avenuehealth.co" class="hover:text-white transition">hello@avenuehealth.co</a></li>
+                        <li><a href="/cdn-cgi/l/email-protection#b9d1dcd5d5d6f9d8cfdcd7ccdcd1dcd8d5cdd197dad6" class="hover:text-white transition"><span class="__cf_email__" data-cfemail="2e464b4242416e4f584b405b4b464b4f425a46004d41">[email&#160;protected]</span></a></li>
                         <li><a href="#" class="hover:text-white transition">Support</a></li>
                         <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
                     </ul>
@@ -596,7 +596,7 @@
         </div>
     </footer>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -609,7 +609,7 @@
         });
 
         // Form submission
-        document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+        document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const formData = {
@@ -617,32 +617,40 @@
                 email: document.getElementById('email').value,
                 relationship: document.getElementById('relationship').value,
                 challenge: document.getElementById('challenge').value,
-                timestamp: new Date().toISOString()
             };
             
-            // Here you would normally send this to your backend/Airtable/etc.
-            console.log('Waitlist signup:', formData);
-            
-            // Show success message
-            document.getElementById('waitlistForm').style.display = 'none';
-            document.getElementById('successMessage').classList.remove('hidden');
-            
-            // Optional: Send to Google Forms, Airtable, or your backend
-            // fetch('YOUR_ENDPOINT', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify(formData)
-            // });
+            // Send to Airtable
+            try {
+                const response = await fetch('https://api.airtable.com/v0/appqi4tAZlJENpuYK/Table%201', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer patKDIiSdYHgZHBRc.2719bdfd8eabb8cc8948a2598626cd8972eec55f3a63f0dc6a7e332ec765fe25',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fields: {
+                            'Name': formData.name,
+                            'Email': formData.email,
+                            'Relationship': formData.relationship,
+                            'Challenge': formData.challenge || 'Not provided'
+                        }
+                    })
+                });
+                
+                if (response.ok) {
+                    // Show success message
+                    document.getElementById('waitlistForm').style.display = 'none';
+                    document.getElementById('successMessage').classList.remove('hidden');
+                } else {
+                    alert('Something went wrong. Please try again or email us at hello@avenuehealth.co');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Something went wrong. Please try again or email us at hello@avenuehealth.co');
+            }
         });
 
         // Intersection Observer for animations
         const observerOptions = {
             threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-      
+            rootM
