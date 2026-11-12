@@ -332,7 +332,8 @@
             <p vid="26">Never miss another appointment, bill, or medication. Avenue centralizes everything caregivers need—with smart reminders that keep you on track—so you can focus on what matters most: caring for your loved one.</p>
             
             <form class="waitlist-pill" vid="27">
-                <input type="email" placeholder="Enter your email for early access" vid="28">
+                <input type="email" placeholder="Enter your email for early access" required vid="28">
+                <input type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px;">
                 <button type="submit" class="btn-pill" vid="29">Join Waitlist</button>
             </form>
         </section>
@@ -410,15 +411,13 @@
 
 
 <script>
-// Airtable Integration
-const AIRTABLE_TOKEN = 'patKDIiSdYHgZHBRc.2719bdfd8eabb8cc8948a2598626cd8972eec55f3a63f0dc6a7e332ec765fe25';
-const AIRTABLE_BASE = 'appqi4tAZlJENpuYK';
-const AIRTABLE_TABLE = 'Table 1';
-
+// Waitlist signup: posts to /api/waitlist, which adds the email to Airtable.
+// No tokens or keys belong in this file.
 document.querySelector('.waitlist-pill').addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const emailInput = this.querySelector('input[type="email"]');
+    const honeypot = this.querySelector('input[name="company"]');
     const submitButton = this.querySelector('.btn-pill');
     const email = emailInput.value;
     
@@ -427,20 +426,10 @@ document.querySelector('.waitlist-pill').addEventListener('submit', async functi
     submitButton.textContent = 'Joining...';
     
     try {
-        const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE}/${AIRTABLE_TABLE}`, {
+        const response = await fetch('/api/waitlist', {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                fields: {
-                    'Email': email,
-                    'Signup date': new Date().toISOString(),
-                    'Status': 'New',
-                    'Source': 'Website'
-                }
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, company: honeypot ? honeypot.value : '' })
         });
 
         if (response.ok) {
