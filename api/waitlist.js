@@ -51,7 +51,7 @@ module.exports = async (req, res) => {
   // First try with the extra fields. If Airtable rejects one of them (a field name
   // or select option that doesn't match the table), retry with the email alone so
   // the signup is never lost, and log the reason for fixing the table later.
-  let result = await createRecord({ Email: email, Status: 'New', Source: 'Direct' });
+  let result = await createRecord({ Email: email, Status: 'Todo', Source: 'Direct' });
   if (!result.ok && result.status === 422) {
     console.error('Waitlist: full record rejected, retrying with email only:', result.detail);
     result = await createRecord({ Email: email });
