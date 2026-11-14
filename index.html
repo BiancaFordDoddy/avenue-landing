@@ -127,8 +127,8 @@ main{display:block}
 .show .wrap{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,120px)}
 .show .stage{position:sticky;top:0;height:100svh;display:flex;align-items:center;justify-content:center}
 .show .stage .phone{--w:clamp(260px,25vw,360px)}
-.show .screen img{opacity:0;transform:scale(1.02);transition:opacity .9s var(--ease),transform 1.2s var(--ease)}
-.show .screen img.on{opacity:1;transform:none}
+.show .stage .screen img{opacity:0;transform:scale(1.02);transition:opacity .9s var(--ease),transform 1.2s var(--ease)}
+.show .stage .screen img.on{opacity:1;transform:none}
 .show .ticks{position:absolute;right:calc(50% - var(--w,300px)/2 - 44px);top:50%;transform:translateY(-50%);display:grid;gap:10px}
 .show .ticks i{display:block;width:6px;height:6px;border-radius:99px;background:rgba(30,32,27,.18);transition:height .6s var(--ease),background .6s}
 .show .ticks i.on{height:26px;background:var(--moss)}
@@ -140,19 +140,22 @@ main{display:block}
 .chapter ul{list-style:none;margin-top:22px;display:grid;gap:10px;font-size:15px;color:var(--ink)}
 .chapter li{display:flex;gap:12px;align-items:baseline}
 .chapter li::before{content:"";flex-shrink:0;width:6px;height:6px;border-radius:99px;background:var(--brass);transform:translateY(-2px)}
+.chapter .mini{display:none}
+/* On phones each chapter shows its own full screen above its text, so the
+   text never covers the app. */
 @media (max-width:860px){
   .show .wrap{grid-template-columns:1fr;gap:0}
-  .show .stage{top:76px;height:auto;padding:14px 0 6px;z-index:1}
-  .show .stage .phone{--w:min(210px,52vw)}
-  .show .ticks{display:none}
+  .show .stage{display:none}
   .show .chapters{padding:0}
-  .chapter{min-height:92svh;align-items:flex-end;padding-bottom:6svh;position:relative;z-index:2}
+  .chapter{min-height:0;flex-direction:column;align-items:stretch;gap:28px;padding:56px 0}
+  .chapter .mini{display:flex;justify-content:center}
+  .chapter .mini .phone{--w:min(300px,76vw)}
   .chapter .card{max-width:none}
   .chapter h3{font-size:clamp(38px,10vw,52px)}
 }
 
 /* Night: the night landscape is revealed as you scroll into it. */
-.night{position:relative;clip-path:inset(0);color:var(--moon-ink);padding:clamp(140px,18vw,240px) 0}
+.night{position:relative;clip-path:inset(0);overflow:clip;color:var(--moon-ink);padding:clamp(140px,18vw,240px) 0}
 .night .sky{position:fixed;inset:0;z-index:-1;pointer-events:none}
 .night .sky svg{width:100%;height:100%}
 .night .kicker{color:var(--moon-accent)}
@@ -212,7 +215,7 @@ footer a:hover{text-decoration:underline}
 
 @media (prefers-reduced-motion:reduce){
   .drift,.no-sda .drift{animation:none!important;opacity:1!important;transform:none!important;transition:none!important}
-  .show .screen img{transition:none}
+  .show .stage .screen img{transition:none}
 }
 </style>
 </head>
@@ -294,6 +297,7 @@ footer a:hover{text-decoration:underline}
       </div>
       <div class="chapters">
         <article class="chapter" data-screen="0">
+          <div class="mini drift" aria-hidden="true"><div class="phone"><div class="screen"><img src="images/D-Day-Today.webp" alt="" loading="lazy" width="780" height="1688"></div></div></div>
           <div class="card glass drift">
             <p class="kicker">Today</p>
             <h3 class="serif">The whole day, at a glance.</h3>
@@ -302,6 +306,7 @@ footer a:hover{text-decoration:underline}
           </div>
         </article>
         <article class="chapter" data-screen="1">
+          <div class="mini drift" aria-hidden="true"><div class="phone"><div class="screen"><img src="images/D-Day-Meds.webp" alt="" loading="lazy" width="780" height="1688"></div></div></div>
           <div class="card glass drift">
             <p class="kicker">Medications</p>
             <h3 class="serif">Nobody has to ask, &ldquo;Did she take it?&rdquo;</h3>
@@ -309,6 +314,7 @@ footer a:hover{text-decoration:underline}
           </div>
         </article>
         <article class="chapter" data-screen="2">
+          <div class="mini drift" aria-hidden="true"><div class="phone"><div class="screen"><img src="images/S-Appointment.webp" alt="" loading="lazy" width="780" height="1688"></div></div></div>
           <div class="card glass drift">
             <p class="kicker">Appointments</p>
             <h3 class="serif">Who&rsquo;s taking Mom?</h3>
@@ -316,6 +322,7 @@ footer a:hover{text-decoration:underline}
           </div>
         </article>
         <article class="chapter" data-screen="3">
+          <div class="mini drift" aria-hidden="true"><div class="phone"><div class="screen"><img src="images/S-Bills.webp" alt="" loading="lazy" width="780" height="1688"></div></div></div>
           <div class="card glass drift">
             <p class="kicker">Bills</p>
             <h3 class="serif">Never late again.</h3>
@@ -323,6 +330,7 @@ footer a:hover{text-decoration:underline}
           </div>
         </article>
         <article class="chapter" data-screen="4">
+          <div class="mini drift" aria-hidden="true"><div class="phone"><div class="screen"><img src="images/S-Contacts.webp" alt="" loading="lazy" width="780" height="1688"></div></div></div>
           <div class="card glass drift">
             <p class="kicker">Contacts</p>
             <h3 class="serif">Every number, finally in one place.</h3>
@@ -330,6 +338,7 @@ footer a:hover{text-decoration:underline}
           </div>
         </article>
         <article class="chapter" data-screen="5">
+          <div class="mini drift" aria-hidden="true"><div class="phone"><div class="screen"><img src="images/S-Notes.webp" alt="" loading="lazy" width="780" height="1688"></div></div></div>
           <div class="card glass drift">
             <p class="kicker">Care notes</p>
             <h3 class="serif">Everyone sees how she&rsquo;s doing.</h3>
@@ -452,7 +461,7 @@ footer a:hover{text-decoration:underline}
   }
 
   // The showcase: switch the phone's screen to match the chapter in view.
-  var shots = document.querySelectorAll('.show .screen img');
+  var shots = document.querySelectorAll('.show .stage .screen img');
   var ticks = document.querySelectorAll('.show .ticks i');
   var chapters = document.querySelectorAll('.chapter');
   if ('IntersectionObserver' in window && shots.length) {
